@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "666748525299",
+    "firebase_url": "https://fir-realtime-database-2900d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-realtime-database-2900d",
+    "storage_bucket": "fir-realtime-database-2900d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666748525299:android:8cda13e5f2d6fe41e3b586",
+        "android_client_info": {
+          "package_name": "com.example.firebasestart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "666748525299-rnsmrnqvh07c7accf9dud655ikk70po2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbUR6aFNiKzDY05pt50Xknz9fIEGD3V58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "666748525299-rnsmrnqvh07c7accf9dud655ikk70po2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "666748525299-gvl1u281shs0vlqacqk7je8bfcl2h6ve.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebasestart",
+                "app_store_id": "6191"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
