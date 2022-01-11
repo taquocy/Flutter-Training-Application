@@ -5,41 +5,65 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
-
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_social_content_share/flutter_social_content_share.dart';
-
-
+import 'package:uni_links/uni_links.dart' as UniLink;
 
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  checkDeepLink();
+  runApp(MyApp());
 }
 
-String prettyPrint(Map json) {
-  JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-  String pretty = encoder.convert(json);
-  return pretty;
+Future checkDeepLink() async {
+  StreamSubscription _sub;
+  try {
+    print("checkDeepLink");
+    await UniLink.getInitialLink();
+    _sub = UniLink.uriLinkStream.listen((Uri? uri) {
+      print('uri: $uri');
+      WidgetsFlutterBinding.ensureInitialized();
+      runApp(MyApp(uri: uri));
+    }, onError: (err) {
+      // Handle exception by warning the user their action did not succeed
+
+      print("onError");
+    });
+  } on PlatformException {
+    print("PlatformException");
+  } on Exception {
+    print('Exception thrown');
+  }
 }
+
+
+
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Uri? uri;
+  //const MyApp({Key? key}) : super(key: key);
+  MyApp({this.uri});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home:  MyHomePage(title: 'Flutter Demo Home Page', uri: uri,),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
+  MyHomePage({Key? key, required this.title, this.uri}) : super(key: key);
+  final Uri? uri;
   final String title;
 
   @override
@@ -48,7 +72,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  String _platformVersion = 'Unknown';
   final _formKey = GlobalKey<FormState>();
 
 
@@ -56,7 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     initPlatformState();
+
   }
+
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
@@ -71,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      //_platformVersion = platformVersion;
     });
   }
 
@@ -79,13 +104,32 @@ class _MyHomePageState extends State<MyHomePage> {
   shareOnFacebook() async {
     String? result = await FlutterSocialContentShare.share(
         type: ShareType.facebookWithoutImage,
-        url: "https://www.apple.com",
-        quote: "captions");
+        url: "https://flutterbooksample.com/page1",
+        quote: "click to visit the app : https://flutterbooksample.com/page1  ");
     print(result);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    SchedulerBinding.instance!.addPostFrameCallback((_){
+      // take action according to data uri
+      if (widget.uri != null) {
+        print('GET URI:');
+        print(widget.uri.toString());
+
+        List<String> splitted = widget.uri.toString().split('/');
+        if (splitted[splitted.length - 1] == 'page1') {
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage(widget.uri)));
+        }
+        if (splitted[splitted.length - 1] == 'page2') {
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => SecondPage(widget.uri)));
+        }
+      }
+    });
+
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -114,7 +158,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                     return null;
                   },
-
                   decoration: const InputDecoration(
                       suffixIcon: Icon(
                         Icons.add_outlined,
@@ -126,15 +169,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 30),
 
                 TextFormField(
-                  validator: (value){
-                    if(value == null || value.isEmpty){
-                      return 'Please enter password ';
-                    }
-                    if(value.length < 6){
-                      return 'Your password must be at lease 6 character';
-                    }
-                    return null;
-                  },
                   obscureText: true,
                   decoration: const InputDecoration(
                       suffixIcon: Icon(
@@ -156,7 +190,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         print('FORM IS OK!!!');
                         //
                       }
-
                     },
                   ),
                 ),
@@ -183,7 +216,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         final userData = await FacebookAuth.i.getUserData(
                           fields: "name,email",
                         );
-                        prettyPrint(userData);
                       } else {
                         print('YYYYY');
                         print(result.status);
