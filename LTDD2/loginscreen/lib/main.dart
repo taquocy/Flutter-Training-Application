@@ -216,6 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         final userData = await FacebookAuth.i.getUserData(
                           fields: "name,email",
                         );
+                        var userProfile = userData;
                       } else {
                         print('YYYYY');
                         print(result.status);

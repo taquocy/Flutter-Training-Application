@@ -4,6 +4,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message");
+}
+
 void main() {
   runApp(MyApp());
 }
@@ -69,6 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     if (Platform.isAndroid) {
+
+
+
       // Android-specific code
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         print(message.notification?.title ?? "TITLE");
